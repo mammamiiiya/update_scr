@@ -3,7 +3,7 @@
 # You might want to change the script according to your necessity and drivers.
 
 echo "And your username is:???"
-read $USERR
+read USERR
 echo "
 OK! 
 Executing script...."
@@ -17,11 +17,11 @@ apt install -y broadcom-sta-dkms && apt update
 
 # Installing all the required packages....
 
-apt install -yy python-setuptools python3-setuptools python-pip python3-pip simplescreenrecorder git rsync vim john aircrack-ng nmap gdebi gparted htop grsync vlc gthumb synaptic gufw mc youtube-dl handbrake timeshift
+apt install -y python3-setuptools python3-pip simplescreenrecorder git rsync vim john aircrack-ng nmap gdebi gparted htop grsync vlc gthumb synaptic gufw handbrake
 
-# Installing .dep packages if available in the ~/Downloads directory
+# Installing .deb packages if available in the ~/Downloads directory of the username
 
-if [ -d "/home/$USERR/Downloads" ]
+if [ -d /home/$USERR/Downloads ]
 then
 	echo "Installing all the .deb packages...."
 	pushd /home/$USERR/Downloads
@@ -40,5 +40,5 @@ fi
 
 echo "
 Everything is done. Rebooting now...."
-apt clean && apt autoclean && apt autoremove -yy
+apt clean && apt autoclean && apt autoremove -y
 /sbin/init 6
