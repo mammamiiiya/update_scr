@@ -2,6 +2,10 @@
 # This is a simple update/install script for my Debian-based Linux distribution.
 # You might want to change the script according to your necessity and drivers.
 
+#NOTE: Update sources.list with contrib and non-free.
+#	Download all the .deb first and then run the script
+#	Virtualbox, Chrome, and TimeShift
+
 echo "And your username is:???"
 read USERR
 echo "
@@ -13,7 +17,7 @@ apt update && apt upgrade -yyq
 
 # Installing Broadcom-STA-DKMS Wi-Fi driver(s)
 
-apt install -y broadcom-sta-dkms && apt update
+apt install -y broadcom-sta-dkms bumblebee-nvidia primus libgl1-nvidia-glx && apt update
 
 # Installing all the required packages....
 
@@ -36,7 +40,9 @@ else
 	echo ""
 fi
 
-# Rebooting the system
+# Applying fixes and Rebooting the system
+/sbin/usermod -aG bumblebee $USERR
+/sbin/adduser $USERR vboxusers
 
 echo "
 Everything is done. Rebooting now...."
