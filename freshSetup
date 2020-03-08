@@ -1,0 +1,63 @@
+#!/bin/bash
+
+set -e
+read -p "Your main user account name please? " LOCALUSER
+
+if [ $USER != "root" ]; then
+	echo "Please run the script by root user."
+	echo "Either su - root or sudo su"
+	exit
+fi
+
+dpkg -l | grep -qw gdebi || sudo apt-get install -yyq gdebi
+
+# First, let's install a bunch of software:
+apt install -yyq openssh-server simplescreenrecorder vlc gthumb gimp \
+synaptic git mc timeshift htop \
+grsync gparted handbrake audacity vim \
+python3-setuptools python3-pip python3-scapy aircrack-ng nmap \
+gufw 
+
+# Install all local .deb packages, if available:
+if [ -d "/home/$LOCALUSER/Downloads" ]; then
+	echo "Installing local .deb packages..."
+	pushd /home/$LOCALUSER/Downloads
+	for FILE in ./*.deb
+    do
+        sudo gdebi -n "$FILE"
+    done
+	popd
+else
+	echo $'\n'$"WARNING! There's no ~/Downloads directory."
+	echo "Local .deb packages can't be automatically installed."
+	sleep 3
+fi
+
+# Purge Firefox 
+#sudo apt purge firefox -yy
+#sudo apt purge firefox-locale-en -yy
+#if [ -d "/home/$LOCALUSER/.mozilla" ]; then
+#	rm -rf /home/$LOCALUSER/.mozilla
+#fi
+#if [ -d "/home/$LOCALUSER/.cache/mozilla" ]; then
+#	rm -rf /home/$LOCALUSER/.cache/mozilla
+#fi
+
+# Install Google Chrome:
+mkdir /tmp/chrome
+pushd /tmp/chrome
+wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+gdebi -n google-chrome-stable_current_amd64.deb
+popd
+rm -rf /tmp/chrome
+
+# Clean and reboot now:
+apt clean && apt autoclean && apt autoremove -y
+echo $'\n'$"*** All done! Please reboot now. ***"
+exit
+
+# For Debian system
+# Edit surces.list adding non-free and contrib packaes
+# Install broadcom-sta-dkms bumblebee-nvidia primus libgl1-nvidia-glx
+# Execute /sbin/usermod -aG bumblebee $LOCALUSER
+# Or Execute /sbin/adduser $LOCALUSER bumblebee
