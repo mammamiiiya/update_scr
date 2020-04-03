@@ -22,6 +22,8 @@ gufw
 if [ -d "/home/$LOCALUSER/Downloads" ]; then
 	echo "Installing local .deb packages..."
 	pushd /home/$LOCALUSER/Downloads
+	#Download Tunnelbear OpenVPN configs
+	wget https://s3.amazonaws.com/tunnelbear/linux/openvpn.zip
 	for FILE in ./*.deb
     do
         sudo gdebi -n "$FILE"
