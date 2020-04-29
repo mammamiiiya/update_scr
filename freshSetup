@@ -1,6 +1,5 @@
 #!/bin/bash
 
-set -e
 read -p "Your main user account name please? " LOCALUSER
 
 if [ $USER != "root" ]; then
@@ -52,6 +51,22 @@ wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 gdebi -n google-chrome-stable_current_amd64.deb
 popd
 rm -rf /tmp/chrome
+
+OS=$(hostnamectl | grep Operating | awk -F ": " '{print $2}')
+
+if [[ "$OS" == *"MINT"* ]];
+then
+	echo "Flatpak comes pre-build with Linux Mint 18.3 and above!"
+else
+	apt update
+	apt install flatpak
+	# Adding Flathub repo
+	flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+	echo "Install GNOME Authenticator"
+	echo "Execute `flatpak install flathub com.github.bilelmoussaoui.Authenticator` with normal user privelages."
+	echo "Reboot the system now!"
+	exit 0
+fi
 
 # Clean and reboot now:
 apt clean && apt autoclean && apt autoremove -y
