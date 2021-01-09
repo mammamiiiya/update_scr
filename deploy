@@ -47,18 +47,18 @@ OS=$(hostnamectl | grep Operating | awk -F ": " '{print $2}')
 if [[ "$OS" == *"MINT"* ]];
 then
 	echo "Flatpak comes pre-build with Linux Mint 18.3 and above!"
-	echo "Adding Flatpak repo for GNOME Authenticator"
-	flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-	echo "Installing GNOME Authenticator..."
-	flatpak install -y flathub com.github.bilelmoussaoui.Authenticator
+	echo "Adding Flatpak repo for GNOME Authenticator as Local User"
+	su - $LOCALUSER -c "flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo"
+	echo "Installing GNOME Authenticator as Local User..."
+	su - $LOCALUSER -c "flatpak install -y flathub com.github.bilelmoussaoui.Authenticator"
 	echo "Done!"
 else
 	apt update
 	apt install flatpak -yqq
-	echo "Adding Flatpak repo for GNOME Authenticator"
-	flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-	echo "Installing GNOME Authenticator..."
-	flatpak install -y flathub com.github.bilelmoussaoui.Authenticator
+	echo "Adding Flatpak repo for GNOME Authenticator as Local User"
+	su - $LOCALUSER -c "flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo"
+	echo "Installing GNOME Authenticator as Local User..."
+	su - $LOCALUSER -c "flatpak install -y flathub com.github.bilelmoussaoui.Authenticator"
 	echo "Done!"
 fi
 
@@ -81,7 +81,7 @@ deb-src http://deb.debian.org/debian/ buster-updates main contrib non-free
 
 " >> /etc/apt/sources.list
 apt update
-apt install broadcom-sta-dkms bumblebee-nvidia primus libgl1-nvidia-glx -yyq
+apt install broadcom-sta-dkms bumblebee-nvidia primus libgl1-nvidia-glx -yqq
 usermod -aG bumblebee $LOCALUSER
 fi
 
