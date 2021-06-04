@@ -1,3 +1,4 @@
-Update Script for Debian-based Linux System
+Update Script for Debian.
 
 Please run this script with root user privelages.
+NOTE: Not all scripts will execute.
