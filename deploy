@@ -17,20 +17,20 @@ cp ./sources.list /etc/apt/sources.list
 
 echo "Update and Upgrade the system system first."
 sleep 1
-dpkg --add-architecture i386 # for running steam
-apt update
-apt upgrade -yyq
+dpkg --add-architecture i386 > /dev/null # for running steam
+apt update > /dev/null
+apt upgrade -yqq
 sleep 1
 
 echo "Check if gdebi and xargs is pre-installed. If not, go ahead and install!"
 sleep 1
-dpkg -l | grep -qw gdebi || apt install -yyq gdebi
-dpkg -l | grep -qw xargs || apt install -yyq xargs
+dpkg -l | grep -qw gdebi || apt install -yqq gdebi
+dpkg -l | grep -qw xargs || apt install -yqq xargs
 sleep 1
 
 echo "Installing packages."
 sleep 1
-apt install -yyq simplescreenrecorder vlc gimp synaptic timeshift htop \
+apt install -yqq simplescreenrecorder vlc gimp synaptic timeshift htop \
 curl wget mtr resolvconf openvpn grsync gparted handbrake audacity vim \
 vim-gtk python3-setuptools python3-pip python3-scapy aircrack-ng nmap gufw \
 qbittorrent intel-microcode xfce4 xfce4-goodies broadcom-sta-dkms network-manager \
@@ -40,7 +40,7 @@ sleep 1
 
 echo "Installing NVIDIA drivers."
 sleep 1
-apt update
+apt update > /dev/null
 apt install nvidia-legacy-390xx-driver firmware-misc-nonfree -yqq
 cp ./xorg.conf /etc/X11/xorg.conf
 chmod 0644 /etc/X11/xorg.conf
@@ -79,7 +79,7 @@ sleep 1
 echo "Installing Google Chrome."
 sleep 1
 pushd $TEMPD
-wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb > /dev/null
 gdebi -n google-chrome-stable_current_amd64.deb
 sleep 1
 echo "Installing Discord."
