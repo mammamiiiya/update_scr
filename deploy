@@ -1,71 +1,81 @@
 #!/bin/bash
 set -e
 
+# Set local user to uid 1000
+LOCALUSER=$(id -un 1000)
+TEMPD=$(mktemp -d)
+
 # Check if the user is root.
 if [ $USER != "root" ]; then
 	echo "Please run the script by root user."
 	exit
 fi
 
-# Update and Upgrade the system system first
+echo "Applying sources.list patch."
+cp /etc/apt/sources.list /etc/apt/sources.list.save
+cp ./sources.list /etc/apt/sources.list
+
+echo "Update and Upgrade the system system first."
+sleep 1
 dpkg --add-architecture i386 # for running steam
 apt update
 apt upgrade -yyq
+sleep 1
 
-# Check if gdebi and xargs is pre-installed. If not, go ahead and install!
+echo "Check if gdebi and xargs is pre-installed. If not, go ahead and install!"
+sleep 1
 dpkg -l | grep -qw gdebi || apt install -yyq gdebi
 dpkg -l | grep -qw xargs || apt install -yyq xargs
+sleep 1
 
-# Install Chrome.
-if [ -f ./chrome.sh ]
-then
-/bin/bash ./chrome.sh
-else
-echo -e "\nchrome.sh not found!"
-fi
+echo "Installing packages."
+sleep 1
+apt install -yyq simplescreenrecorder vlc gimp synaptic git timeshift htop \
+curl wget mtr resolvconf openvpn grsync gparted handbrake audacity vim \
+vim-gtk python3-setuptools python3-pip python3-scapy aircrack-ng nmap gufw \
+xorg i3 i3-wm i3lock i3status qbittorrent nitrogen broadcom-sta-dkms network-manager \
+network-manager-openvpn
+#steam
+sleep 1
 
-# Install Discord.
-if [ -f ./discord.sh ]
-then
-/bin/bash ./discord.sh
-else
-echo -e "\ndiscord.sh not found!"
-fi
+echo "Installing NVIDIA drivers."
+sleep 1
+apt update
+apt install nvidia-legacy-390xx-driver firmware-misc-nonfree -yqq
+cp ./xorg.conf /etc/X11/xorg.conf
+chmod 0644 /etc/X11/xorg.conf
+echo "Applying patch to xsessionrc"
+cat << EOF >> /home/$LOCALUSER/.xsessionrc
+xrandr --setprovideroutputsource modesetting NVIDIA-0
+xrandr --auto
+xrandr --dpi 96
+EOF
+chown $LOCALUSER:$LOCALUSER /home/$LOCALUSER/.xsessionrc
+chmod +x /home/$LOCALUSER/.xsessionrc
+sleep 1
 
-# Install Spotify.
-if [ -f ./spotify.sh ]
-then
-/bin/bash ./spotify.sh
-else
-echo -e "\nspotify.sh not found!"
-fi
+echo "Installing Google Chrome."
+sleep 1
+pushd $TEMPD
+wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+gdebi -n google-chrome-stable_current_amd64.deb
+sleep 1
+echo "Installing Discord."
+sleep 1
+GETLINK=$(curl -sS "https://discord.com/api/download?platform=linux&format=deb"| awk '/https/,/deb/' | awk -F '\"' '{print $2}')
+curl --progress-bar -sLo discord.deb $GETLINK
+gdebi -n discord.deb
+popd
+rm -r $TEMPD
+sleep 1
 
-# Get Hostname Information.
-OS=$(hostnamectl | grep Operating | awk -F ": " '{print $2}')
+echo "Installing Spotify."
+sleep 1
+curl -sS https://download.spotify.com/debian/pubkey_0D811D58.gpg | apt-key add - 
+echo "deb http://repository.spotify.com stable non-free" | tee /etc/apt/sources.list.d/spotify.list
+apt update && apt install spotify-client -yqq
+sleep 1
 
-# If the OS is Debian, run the scripts.
-if [[ "$OS" == *"Debian"* ]]; then
-
-	# Install the packages.
-	if [ -f ./pkglist.txt ]
-	then
-		xargs apt install -yqq < pkglist.txt
-	else
-		echo -e "\npkglist.txt not found!"
-		sleep 1
-	fi
-
-	# Install NVIDIA Drivers
-	if [ -f ./nvidia.sh ]
-	then
-		/bin/bash ./nvidia.sh
-	else
-		echo -e "\nnvidia.sh not found!"
-		sleep 1
-	fi
-
-fi
-
-echo -e "Please do not forget to reboot now!"
-echo -e "Also, execute localdebs and authenticator when in need"
+echo "Script completed at $(date)"
+echo "Do not forget to restart your computer!"
 #EOF
