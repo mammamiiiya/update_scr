@@ -1,6 +1,12 @@
 #!/bin/bash
 # Script to install local .deb packages from their Downloads directory
 
+# Check if the user is root.
+if [ $USER != "root" ]; then
+	echo "Please run the script by root user."
+	exit
+fi
+
 LOCALUSER=$(id -un 1000)
 
 if [ -d "/home/$LOCALUSER/Downloads" ]; then
