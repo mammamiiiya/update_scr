@@ -30,10 +30,10 @@ sleep 1
 
 echo "Installing packages."
 sleep 1
-apt install -yyq simplescreenrecorder vlc gimp synaptic git timeshift htop \
+apt install -yyq simplescreenrecorder vlc gimp synaptic timeshift htop \
 curl wget mtr resolvconf openvpn grsync gparted handbrake audacity vim \
 vim-gtk python3-setuptools python3-pip python3-scapy aircrack-ng nmap gufw \
-xorg i3 i3-wm i3lock i3status qbittorrent nitrogen broadcom-sta-dkms network-manager \
+qbittorrent intel-microcode xfce4 xfce4-goodies broadcom-sta-dkms network-manager \
 network-manager-openvpn
 #steam
 sleep 1
@@ -50,8 +50,30 @@ xrandr --setprovideroutputsource modesetting NVIDIA-0
 xrandr --auto
 xrandr --dpi 96
 EOF
+cp /home/$LOCALUSER/.xsessionrc /etc/lightdm/nvidia.sh
+chmod +x /etc/lightdm/nvidia.sh
+cat << EOF >> /etc/lightdm/lightdm.conf
+
+# Added for NVIDIA
+[SeatDefaults]
+display-setup-script=/etc/lightdm/nvidia.sh
+EOF
+
 chown $LOCALUSER:$LOCALUSER /home/$LOCALUSER/.xsessionrc
 chmod +x /home/$LOCALUSER/.xsessionrc
+
+echo "Applying patch for Touchpad as well."
+sleep 1
+mkdir /etc/X11/xorg.conf.d
+cat << EOF > /etc/X11/xorg.conf.d/40-libinput.conf
+Section "InputClass"
+        Identifier "libinput touchpad catchall"
+        MatchIsTouchpad "on"
+        MatchDevicePath "/dev/input/event*"
+        Driver "libinput"
+        Option "Tapping" "on"
+EndSection
+EOF
 sleep 1
 
 echo "Installing Google Chrome."
