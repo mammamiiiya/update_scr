@@ -33,8 +33,7 @@ sleep 1
 apt install -yqq simplescreenrecorder vlc gimp synaptic timeshift htop \
 curl wget mtr resolvconf openvpn grsync gparted handbrake audacity vim \
 vim-gtk python3-setuptools python3-pip python3-scapy aircrack-ng nmap gufw \
-qbittorrent intel-microcode xfce4 xfce4-goodies broadcom-sta-dkms network-manager \
-network-manager-openvpn
+qbittorrent intel-microcode broadcom-sta-dkms network-manager-openvpn
 #steam
 sleep 1
 
