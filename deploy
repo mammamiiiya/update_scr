@@ -33,7 +33,8 @@ sleep 1
 apt install -yqq simplescreenrecorder vlc gimp synaptic timeshift htop \
 curl wget mtr resolvconf openvpn grsync gparted handbrake audacity vim \
 vim-gtk python3-setuptools python3-pip python3-scapy aircrack-ng nmap gufw \
-qbittorrent intel-microcode broadcom-sta-dkms network-manager-openvpn
+qbittorrent intel-microcode broadcom-sta-dkms network-manager-openvpn keepass2 \
+default-jre default-jdk network-manager-openvpn-gnome
 #steam wireshark
 sleep 1
 
@@ -88,6 +89,12 @@ curl --progress-bar -sLo discord.deb $GETLINK
 gdebi -n discord.deb
 popd
 rm -r $TEMPD
+sleep 1
+
+echo "Getting Tunnelbear files."
+sleep 1
+curl -so /home/$LOCALUSER/openvpn.zip https://tunnelbear.s3.amazonaws.com/support/linux/openvpn.zip
+chown $LOCALUSER:$LOCALUSER /home/$LOCALUSER/openvpn.zip
 sleep 1
 
 echo "Installing Spotify."
